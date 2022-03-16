@@ -31,39 +31,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.indigo.shade900,
       appBar: AppBar(
+        backgroundColor: Colors.indigo.shade900,
         title: const Text("Todo List"),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(color: Color.fromARGB(255, 140, 158, 255)),
-              child: Row(
-                children: [
-                  const Expanded(
-                      child: TextField(
-                    decoration: InputDecoration(
-                        filled: true,
-                        labelText: "Enter To Do Task title"),
-                  )),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.add),
-                    label: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Add Task"),
-                    ),
-                    style:
-                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                  )
-                ],
-              ),
+      body: Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(color: Color.fromARGB(255, 192, 201, 255),borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Expanded(
+                    child: TextField(
+                  decoration: InputDecoration(
+                      filled: true,
+                      labelText: "Enter To Do Task title"),
+                )),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add),
+                  label: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 18.0),
+                    child: Text("Add Task"),
+                  ),
+                  style:
+                      ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
