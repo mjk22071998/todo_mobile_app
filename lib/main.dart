@@ -106,7 +106,31 @@ class _MyHomePageState extends State<MyHomePage> {
                             itemCount: maps.length,
                             itemBuilder: (context, index) {
                               TodoTask todoTask = TodoTask.fromMap(maps[index]);
-                              return Container();
+                              return Card(
+                                elevation: 5,
+                                color: Colors.white,
+                                margin: const EdgeInsets.all(10),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text(
+                                        todoTask.task,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "created on ${todoTask.dateTime.day}-${todoTask.dateTime.month}-${todoTask.dateTime.year}",
+                                        textAlign: TextAlign.right,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         );
@@ -140,7 +164,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 Container(
                   margin: const EdgeInsets.only(left: 10),
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        taskText = taskController.text;
+                        taskController.text = "";
+                      });
+                      TodoTask newTask =
+                          TodoTask(task: taskText, dateTime: DateTime.now());
+                      DBHelper.dbHelper.addTask(newTask);
+                    },
                     icon: const Icon(Icons.add),
                     label: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 18.0),
