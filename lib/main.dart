@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todo_mobile_app/database/db_helper.dart';
+
+import 'models/todo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,36 +31,124 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  getTasks() async {
+    return DBHelper.dbHelper.getAllTasks();
+  }
+
+  TextEditingController taskController = TextEditingController();
+  String taskText = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.indigo.shade900,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.indigo.shade900,
         title: const Text("Todo List"),
       ),
       body: Column(
         children: [
+          Expanded(
+            child: FutureBuilder(
+              future: getTasks(),
+              builder: (context, taskSnapshot) {
+                switch (taskSnapshot.connectionState) {
+                  case ConnectionState.none:
+                    return const Center(
+                      child: Text(
+                        "You have'nt created any Task yet, Please create one",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  case ConnectionState.active:
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        CircularProgressIndicator(),
+                        Text(
+                          "Loading data",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    );
+                  case ConnectionState.done:
+                    {
+                      if (taskSnapshot.data == null) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(
+                            child: Text(
+                              "You have'nt created any Task yet, Please create one",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      } else {
+                        List<Map<String, dynamic>> maps =
+                            taskSnapshot.data as List<Map<String, dynamic>>;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.builder(
+                            itemCount: maps.length,
+                            itemBuilder: (context, index) {
+                              TodoTask todoTask = TodoTask.fromMap(maps[index]);
+                              return Container();
+                            },
+                          ),
+                        );
+                      }
+                    }
+                }
+              },
+            ),
+          ),
           Container(
-            decoration: const BoxDecoration(color: Color.fromARGB(255, 192, 201, 255),borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),),
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: Colors.indigoAccent,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Expanded(
+                Expanded(
                     child: TextField(
-                  decoration: InputDecoration(
+                  controller: taskController,
+                  decoration: const InputDecoration(
                       filled: true,
+                      fillColor: Colors.white,
+                      focusedBorder: InputBorder.none,
                       labelText: "Enter To Do Task title"),
                 )),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 18.0),
-                    child: Text("Add Task"),
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.add),
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 18.0),
+                      child: Text("Add Task"),
+                    ),
+                    style:
+                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
                   ),
-                  style:
-                      ElevatedButton.styleFrom(shape: const StadiumBorder()),
                 )
               ],
             ),
